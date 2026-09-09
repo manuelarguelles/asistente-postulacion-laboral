@@ -14,12 +14,15 @@ Crear un repositorio limpio para un agente nuevo de asistencia en postulaciones 
 - No se importará código, memoria, prompts, datos ni credenciales del proyecto anterior.
 - El agente preparará y analizará postulaciones, pero no enviará acciones externas sin confirmación.
 - Nombre de trabajo: `asistente-postulacion-laboral`.
-- Repositorio previsto: privado.
+- Repositorio: público en GitHub (`manuelarguelles/asistente-postulacion-laboral`).
+- Stack inicial propuesto: Next.js + TypeScript + Tailwind + Zod + Vercel AI SDK, PostgreSQL + Prisma, Railway Storage Bucket y Redis/worker solo cuando el MVP lo requiera.
+- Despliegue objetivo: Railway con servicio web, migraciones pre-deploy, health check y ambientes staging/production.
 
 ## Blockers
 
 - Faltan decisiones de stack, proveedor cloud y fuentes de ofertas.
 - Faltan criterios concretos para el score de ajuste.
+- Falta confirmar proveedor LLM, autenticación y política de almacenamiento de documentos.
 
 ## Next Action
 

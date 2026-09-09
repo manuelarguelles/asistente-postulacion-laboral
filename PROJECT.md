@@ -41,9 +41,52 @@ Una persona que busca empleo y dispone de un CV, preferencias laborales y posibl
 - Explicabilidad: justificar el puntaje o recomendación con criterios visibles.
 - Reversibilidad: permitir editar, descartar y recuperar borradores.
 
-## Stack
+## Stack propuesto — Railway-first
 
-Pendiente de decisión durante discovery. La plataforma objetivo será cloud y el stack se elegirá según el MVP, el tiempo disponible y el costo operativo.
+El stack inicial será un monolito modular TypeScript para reducir complejidad y desplegarlo fácilmente en Railway. Se podrá separar el worker cuando el procesamiento asíncrono lo justifique.
+
+### Aplicación
+
+- **Next.js con App Router + TypeScript**: interfaz web, Server Components, Route Handlers y Server Actions cuando corresponda.
+- **Tailwind CSS + componentes accesibles**: UI rápida de iterar sin introducir un sistema frontend separado.
+- **Zod**: validación de entradas, salidas estructuradas y variables de entorno.
+- **Vercel AI SDK**: abstracción del proveedor LLM, streaming del chat y tool calling; el despliegue seguirá siendo Railway.
+
+### Datos y archivos
+
+- **PostgreSQL administrado por Railway**: usuarios, perfiles, ofertas, análisis, borradores y auditoría.
+- **Prisma**: esquema, migraciones y acceso tipado; `prisma migrate deploy` como pre-deploy command.
+- **Railway Storage Bucket compatible con S3**: CVs y documentos; usar URLs prefirmadas y no pasar archivos grandes por el servidor web.
+- **Redis administrado por Railway, solo cuando sea necesario**: cola de trabajos, rate limiting y tareas asíncronas.
+
+### Procesamiento y despliegue
+
+- **Servicio web Railway**: Next.js con `output: "standalone"`, health check y `PORT` proporcionado por Railway.
+- **Worker Railway opcional**: mismo repositorio, proceso separado para extracción de documentos, generación de borradores y tareas largas.
+- **Railpack al inicio; Dockerfile si necesitamos control reproducible**.
+- **GitHub autodeploy + ambientes staging/production**.
+
+### Observabilidad y seguridad
+
+- Logs estructurados y endpoint `/api/health`.
+- Variables secretas exclusivamente en Railway; nunca en Git ni en `NEXT_PUBLIC_*`.
+- Auth gestionada por la aplicación/proveedor elegido en discovery, con autorización por usuario.
+- Retención mínima de documentos, eliminación/exportación de datos y auditoría de acciones.
+
+### Arquitectura inicial
+
+```text
+Navegador
+   │
+   ▼
+Next.js web + Route Handlers ───► PostgreSQL (Railway)
+   │                                      │
+   ├──► LLM provider vía AI SDK           └── Prisma migrations
+   ├──► S3-compatible Bucket (documentos)
+   └──► Redis + Worker Railway (fase posterior)
+```
+
+La elección se basa en que Railway documenta despliegues directos de Next.js con PostgreSQL, variables referenciadas entre servicios, migraciones pre-deploy, Redis, workers y buckets. [Guía oficial Next.js + Postgres](https://docs.railway.com/guides/nextjs) · [Guía oficial full-stack](https://docs.railway.com/guides/fullstack-nextjs)
 
 ## Entregable inicial
 
