@@ -1,41 +1,35 @@
 # Roadmap
 
-## Fase 0 — Kickoff y discovery [🔄]
+## Fase 0 — Kickoff y discovery [✅]
 
-- Confirmar usuario principal y escenario de uso.
-- Elegir si las ofertas se ingresan manualmente, por URL, archivo o integración autorizada.
-- Definir qué documentos acepta el agente y cómo se almacenan.
-- Elegir stack cloud y proveedor de autenticación/almacenamiento.
-- Definir criterios de evaluación del match.
+- Especificación aprobada para `chambas.analizodatos.com`.
+- Monolito Python/FastAPI, PostgreSQL local → Railway y adaptador LaTeX definidos.
+- Rate limiting, seguridad, consentimiento, abuso y accesibilidad incluidos.
 
-## Fase 1 — Núcleo de perfil y ofertas [⏳]
+## Fase 1 — Baseline e identidad [🔄]
 
-- Modelo de usuario, perfil profesional, preferencias y oferta.
-- Carga de texto/archivo con validación.
-- Extracción estructurada de requisitos.
-- Persistencia y listado de ofertas.
+- FastAPI, configuración, health check, PostgreSQL/Alembic y almacenamiento abstracto.
+- Google OAuth, aprobación manual, consentimiento versionado y rol administrador.
+- Cifrado, autorización, logs seguros y auditoría.
 
-## Fase 2 — Análisis conversacional [⏳]
+## Fase 2 — Perfil, documentos y convocatorias [⏳]
 
-- Comparación oferta-perfil.
-- Evidencia y explicación de fortalezas/brechas.
-- Chat acotado al contexto de una oferta.
-- Manejo de incertidumbre y datos faltantes.
+- PDF nativo/OCR/revisión editable.
+- URL, texto e imagen combinables; extracción segura y conflictos visibles.
+- Perfil y hasta tres CV originales; retención, exportación y borrado.
 
-## Fase 3 — Preparación de postulación [⏳]
+## Fase 3 — Análisis y CV LaTeX [⏳]
 
-- Generación de borrador de CV adaptado.
-- Generación de carta o respuestas.
-- Revisión de afirmaciones no sustentadas.
-- Edición y exportación.
+- Análisis de coincidencias/brechas con IA configurable.
+- Chat acotado, preguntas de brechas y rate limiting.
+- Adaptador `auto-postulacion-cvs`/`tectonic`, iteración y PDF.
 
-## Fase 4 — Seguridad y entrega [⏳]
+## Fase 4 — Verificación y entrega [⏳]
 
-- Autenticación y autorización.
-- Protección de documentos y secretos.
-- Confirmación humana para acciones externas.
-- Pruebas, README operativo y despliegue.
+- Tests unitarios, integración y E2E; accesibilidad y seguridad.
+- Detección de abuso y revisión humana.
+- Railway, staging privado, dominio, smoke tests y documentación.
 
 ## Recorte de emergencia
 
-Si el tiempo es limitado, entregar solo: carga manual de una oferta, análisis de ajuste con un perfil y generación de un borrador revisable. No incluir automatización de portales.
+Si el tiempo es limitado, entregar solo: Google OAuth/aprobación, un CV PDF, una convocatoria URL/texto/imagen, análisis y PDF LaTeX revisable. No incluir cartas, entrevistas ni automatización de portales.

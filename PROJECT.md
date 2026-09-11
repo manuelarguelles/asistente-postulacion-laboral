@@ -29,7 +29,7 @@ Una persona que busca empleo y dispone de un CV, preferencias laborales y posibl
 - Postulación automática o envío de formularios sin confirmación por oferta.
 - Acceso a cuentas personales de portales de empleo sin diseño de seguridad aprobado.
 - Scraping masivo de sitios que lo prohíban.
-- Uso o importación de `auto-postulacion-cvs`.
+- Automatización de postulaciones o acceso autenticado a portales; sí se reutilizará mediante un adaptador aislado su componente LaTeX aprobado.
 - Reutilización silenciosa de datos, prompts o credenciales de proyectos anteriores.
 
 ## Principios del agente
@@ -41,29 +41,28 @@ Una persona que busca empleo y dispone de un CV, preferencias laborales y posibl
 - Explicabilidad: justificar el puntaje o recomendación con criterios visibles.
 - Reversibilidad: permitir editar, descartar y recuperar borradores.
 
-## Stack propuesto — Railway-first
+## Stack aprobado — local primero, Railway después
 
-El stack inicial será un monolito modular TypeScript para reducir complejidad y desplegarlo fácilmente en Railway. Se podrá separar el worker cuando el procesamiento asíncrono lo justifique.
+El stack inicial será un monolito modular Python/FastAPI por su encaje con LaTeX y el tiempo disponible. Se podrá separar el worker cuando el procesamiento asíncrono lo justifique. La especificación y el plan aprobados están en `docs/SPEC.md` y `docs/IMPLEMENTATION-PLAN.md`.
 
 ### Aplicación
 
-- **Next.js con App Router + TypeScript**: interfaz web, Server Components, Route Handlers y Server Actions cuando corresponda.
-- **Tailwind CSS + componentes accesibles**: UI rápida de iterar sin introducir un sistema frontend separado.
-- **Zod**: validación de entradas, salidas estructuradas y variables de entorno.
-- **Vercel AI SDK**: abstracción del proveedor LLM, streaming del chat y tool calling; el despliegue seguirá siendo Railway.
+- **FastAPI + Jinja2 + HTMX**: aplicación web y UI progresiva.
+- **SQLAlchemy + Alembic**: modelo, acceso y migraciones PostgreSQL.
+- **Adaptadores configurables** para IA, extracción, fuentes y LaTeX/tectonic.
 
 ### Datos y archivos
 
 - **PostgreSQL administrado por Railway**: usuarios, perfiles, ofertas, análisis, borradores y auditoría.
-- **Prisma**: esquema, migraciones y acceso tipado; `prisma migrate deploy` como pre-deploy command.
+- **SQLAlchemy/Alembic**: esquema, migraciones y acceso tipado; migraciones ejecutadas antes del despliegue.
 - **Railway Storage Bucket compatible con S3**: CVs y documentos; usar URLs prefirmadas y no pasar archivos grandes por el servidor web.
 - **Redis administrado por Railway, solo cuando sea necesario**: cola de trabajos, rate limiting y tareas asíncronas.
 
 ### Procesamiento y despliegue
 
-- **Servicio web Railway**: Next.js con `output: "standalone"`, health check y `PORT` proporcionado por Railway.
+- **Servicio web Railway**: FastAPI, health check y `PORT` proporcionado por Railway.
 - **Worker Railway opcional**: mismo repositorio, proceso separado para extracción de documentos, generación de borradores y tareas largas.
-- **Railpack al inicio; Dockerfile si necesitamos control reproducible**.
+- **Dockerfile si necesitamos un entorno reproducible para tectonic/OCR**.
 - **GitHub autodeploy + ambientes staging/production**.
 
 ### Observabilidad y seguridad
